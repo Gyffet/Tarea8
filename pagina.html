@@ -1,0 +1,332 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
+</head>
+
+<body>
+
+    <div id="app_basic">
+        <div v-if="principal == 1">
+            <button v-on:click="Captura()">
+                Captura de artículo
+            </button>
+            <button v-on:click="Compra()">
+                Compra de artículo
+            </button>
+        </div>
+
+        <div v-if="pCaptura == 1">
+            <h1>Captura de artículo</h1>
+
+            Descripción *<br>
+            <input type="text" v-model="descripcion" value="" />
+            <br>
+            Precio *<br>
+            <input type="number" min="1" step="any" v-model="precio" value="" /><br>
+            Cantidad en Almacén *<br>
+            <input type="number" v-model="almacen" value="" /><br>
+
+            <button v-on:click="Registro()">
+                Resgistrar
+            </button>
+            </br>
+            <button v-on:click="Principal()">
+                Regresar al inicio
+            </button>
+        </div>
+
+        <div v-if="pCompra == 1">
+            <h1>Compra de artículo</h1>
+
+            Descripción *<br>
+            <input type="text" v-model="descripcion" value="" />
+
+            <div v-if="resultado == 1">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>Descripcion</th>
+                            <th> | </th>
+                            <th>Precio</th>
+                            <th> | </th>
+                            <th>Disponible en almacen</th>
+                            <th> | </th>
+                            <th>Foto</th>
+                            <th> | </th>
+                            <th>Deseados</th>
+                            <th> | </th>
+                            <th>Comprar</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr v-for="item in resultado" :key="item.id">
+                            <th>{{item.descripcion}}</th>
+                            <th> | </th>
+                            <th>{{item.precio}}</th>
+                            <th> | </th>
+                            <th>{{item.almacen}}</th>
+                            <th> | </th>
+                            <th>{{item.foto}}</th>
+                            <th> | </th>
+                            <th><input type="number" v-model="deseados" value="" /><br></th>
+                            <th> | </th>
+                            <th><button v-on:click="Carrito(item)">
+                                    Compra
+                                </button>
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <button v-on:click="Buscar()">
+                Buscar
+            </button>
+            <button v-on:click="Principal()">
+                Regresar al inicio
+            </button>
+
+        </div>
+
+        <div v-if="pCarrito == 1">
+            <h1>Carrito total: {{totalCarrito}}</h1>
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th>Descripcion</th>
+                        <th> | </th>
+                        <th>Precio</th>
+                        <th> | </th>
+                        <th>Cantidad</th>
+                        <th> | </th>
+                        <th>Costo</th>
+                        <th> | </th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr v-for="item in carrito" :key="item.id">
+                        <th>{{item.descripcion}}</th>
+                        <th> | </th>
+                        <th>{{item.precio}}</th>
+                        <th> | </th>
+                        <th>{{item.cantidad}}</th>
+                        <th> | </th>
+                        <th>{{item.precio x item.cantidad}}</th>
+                        <th> | </th>
+                        <th>
+                            <button v-on:click="Eliminar(item)">
+                                Eliminar
+                            </button>
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+
+            </br>
+
+            <button v-on:click="EliminarTodo(item)">
+                Vaciar el carrito
+            </button>
+
+            <button v-on:click="Compra()">
+                Regresar a la compra
+            </button>
+            </br>
+            <button v-on:click="Principal()">
+                Regresar al inicio
+            </button>
+
+        </div>
+
+    </div>
+
+    <script>
+        new Vue({
+            el: "#app_basic",
+            data: {
+                message: "Hello World",
+                principal: 1,
+                pCompra: 0,
+                pCaptura: 0,
+                pCarrito: 0,
+                descripcion: "",
+                precio: null,
+                almacen: null,
+                resultado: null,
+                deseados: 1,
+                carrito: null,
+            },
+            methods: {
+                Eliminar(articulo) {
+                    var result = confirm("¿Desea eliminar el articulo del carrito?");
+                    if (result == true) {
+                        var cliente = new WSClient("/Servicio/rest/ws");
+                        cliente.post("eliminar_Articulo", {
+                            descripcion: this.descripcion
+                        },
+                            function (code, result) {
+                                if (code == 200) {
+                                    this.resultado = result;
+                                }
+                                else {
+                                    alert(JSON.stringify(result));
+                                }
+                            });
+                    }
+                    else {
+                        alert("Se queda el artículo");
+                    }
+                    
+                },
+
+
+                EliminarTodo() {
+                    var result = confirm("¿Desea vaciar el carrito?");
+                    if (result == true) {
+                        var cliente = new WSClient("/Servicio/rest/ws");
+                        cliente.post("eliminar_todo", {
+                            descripcion: this.descripcion
+                        },
+                            function (code, result) {
+                                if (code == 200) {
+                                    this.resultado = result;
+                                }
+                                else {
+                                    alert(JSON.stringify(result));
+                                }
+                            });
+                    }
+                    else {
+                        alert("Se queda todo");
+                    }
+                },
+
+                Captura() {
+                    this.principal = 0;
+                    this.pCompra = 0;
+                    this.pCaptura = 1;
+                    this.pCarrito = 0;
+                    this.Limpieza();
+                },
+                Compra() {
+                    this.principal = 0;
+                    this.pCompra = 1;
+                    this.pCaptura = 0;
+                    this.pCarrito = 0;
+                    this.Limpieza();
+                },
+                Principal() {
+                    this.principal = 1;
+                    this.pCompra = 0;
+                    this.pCaptura = 0;
+                    this.pCarrito = 0;
+                    this.Limpieza();
+                },
+                Limpieza() {
+                    this.descripcion = "";
+                    this.precio = null;
+                    this.almacen = null;
+                    this.encontrado = null;
+                },
+                Buscar() {
+                    var cliente = new WSClient("/Servicio/rest/ws");
+                    cliente.post("Consulta_Articulo", {
+                        descripcion: this.descripcion
+                    },
+                        function (code, result) {
+                            if (code == 200) {
+                                this.resultado = result;
+                                this.encontrado = 1;
+                            }
+                            else {
+                                alert(JSON.stringify(result));
+                            }
+                        });
+                },
+                Registro() {
+                    var cliente = new WSClient("/Servicio/rest/ws");
+                    cliente.post("Nuevo_Articulo", {
+                        articulo:
+                        {
+                            descripcion: this.descripcion,
+                            precio: this.precio,
+                            almacen: this.almacen,
+                        }
+                    },
+                        function (code, result) {
+                            if (code == 200) {
+                                alert("Producto dado de alta");
+                            }
+                            else {
+                                alert(JSON.stringify(result));
+                            }
+                        });
+                },
+
+                pantallaCarrito() {
+                    this.principal = 0;
+                    this.pCompra = 0;
+                    this.pCaptura = 0;
+                    this.pCarrito = 1;
+                    var cliente = new WSClient("/Servicio/rest/ws");
+                    cliente.post("total_Carrito", {
+                        articulo:
+                        {
+                            descripcion: this.descripcion,
+                            precio: this.precio,
+                            deseados: this.deseados,
+                        }
+                    },
+                        function (code, result) {
+                            if (code == 200) {
+                                this.carrito = result;
+                            }
+                            else {
+                                alert(JSON.stringify(result));
+                            }
+                        });
+                },
+                        
+               
+
+                Carrito(item) {
+                    if (item.almacen <= deseados) {
+                        var cliente = new WSClient("/Servicio/rest/ws");
+                        cliente.post("alCarrito", {
+                            articulo:
+                            {
+                                descripcion: this.descripcion,
+                                precio: this.precio,
+                                deseados: this.deseados,
+                            }
+                        },
+                            function (code, result) {
+                                if (code == 200) {
+                                    alert("Producto dado de alta");
+                                }
+                                else {
+                                    alert(JSON.stringify(result));
+                                }
+                            });
+                    }
+                    else {
+                        alert("De este articulo solo estan disponibles " + this.deseados);
+                    }
+                },
+            },
+        })
+    </script>
+</body>
+</html>
+
+
+
+
+
+
