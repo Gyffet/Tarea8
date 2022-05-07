@@ -96,7 +96,7 @@
         </div>
 
         <div v-if="pCarrito == 1">
-            <h1>Carrito total: {{totalCarrito}}</h1>
+            <h1>Carrito total: {{totalCarrito()}}</h1>
             <table class="table table-sm table-hover">
                 <thead>
                     <tr>
@@ -162,6 +162,7 @@
                 precio: null,
                 almacen: null,
                 resultado: null,
+                granTotal: 0,
                 deseados: 1,
                 carrito: null,
             },
@@ -187,7 +188,14 @@
                     }
                     
                 },
-
+                
+                totalCarrito() {
+                    var total = 0;
+                    this.carrito.forEach(element => {
+                        total = total + (element.precio * element.cantidad);
+                    })
+                    this.granTotal = total;
+                },
 
                 EliminarTodo() {
                     var result = confirm("¿Desea vaciar el carrito?");
