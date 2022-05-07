@@ -195,13 +195,12 @@ public class Servicio
         try {
             PreparedStatement stmt_1 = conexion.prepareStatement("DELETE FROM carrito WHERE descripcion=?");
             try {
-                stmt_1.setString(1, descipcion);
+                stmt_1.setString(1, descripcion);
                 ResultSet rs = stmt_1.executeQuery();
 
             } catch (Exception e) {
                 return Response.status(400).entity(j.toJson(new Error(e.getMessage()))).build();
             } finally {
-                rs.close();
                 stmt_1.close();
             }
 
@@ -227,7 +226,6 @@ public class Servicio
             } catch (Exception e) {
                 return Response.status(400).entity(j.toJson(new Error(e.getMessage()))).build();
             } finally {
-                rs.close();
                 stmt_1.close();
             }
 
