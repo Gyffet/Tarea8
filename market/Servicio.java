@@ -138,8 +138,8 @@ public class Servicio
 
             try {
                 stmt_2.setString(1, articulo.descripcion);
-                stmt_2.setInt(2, articulo.precio);
-                stmt_2.setInt(3, articulo.almacen);
+                stmt_2.setFloat(2, articulo.precio);
+                stmt_2.setInt(3, articulo.cantidad);
                 stmt_2.executeUpdate();
             } finally {
                 stmt_2.close();
