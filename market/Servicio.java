@@ -121,38 +121,32 @@ public class Servicio
                 if (rs.next()) {
 
                     resta = rs.getInt(3) - articulo.cantidad;
+                    stmt_1.setInt(1, resta);
+                    stmt_1.setString(2, articulo.descripcion);
+                    stmt_1.executeUpdate();
+
+                    stmt_2.setString(1, articulo.descripcion);
+                    stmt_2.setFloat(2, articulo.precio);
+                    stmt_2.setInt(3, articulo.cantidad);
+                    stmt_2.executeUpdate();
 
                 }
                 return Response.status(400).entity(j.toJson(new Error("Error al rescatar cantidad"))).build();
+
+            } catch (Exception e) {
+                return Response.status(400).entity(j.toJson(new Error(e.getMessage()))).build();
             } finally {
+                conexion.close();
                 stmt.close();
-            }
-
-            try {
-                stmt_1.setInt(1, resta);
-                stmt_1.setString(2, articulo.descripcion);
-                stmt_1.executeUpdate();
-            } finally {
                 stmt_1.close();
-            }
-
-            try {
-                stmt_2.setString(1, articulo.descripcion);
-                stmt_2.setFloat(2, articulo.precio);
-                stmt_2.setInt(3, articulo.cantidad);
-                stmt_2.executeUpdate();
-            } finally {
                 stmt_2.close();
+                return Response.ok()
+                        .build();
             }
 
         } catch (Exception e) {
             return Response.status(400).entity(j.toJson(new Error(e.getMessage()))).build();
-        } finally {
-            conexion.close();
         }
-
-        return Response.ok()
-                .build();
     }
 
     @POST
