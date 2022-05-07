@@ -108,7 +108,7 @@ public class Servicio
     @Path("alCarrito")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response modifica(@FormParam("articulo") Articulo articulo) throws Exception {
+    public Response alCarro(@FormParam("articulo") Articulo articulo) throws Exception {
         Connection conexion = pool.getConnection();
         try {
             PreparedStatement stmt = conexion.prepareStatement("SELECT a.cantidad FROM articulos WHERE cantidad=articulo.cantidad");
@@ -159,7 +159,7 @@ public class Servicio
     @Path("total_carrito")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response borra(@FormParam("articulo") Articulo articulo) throws Exception {
+    public Response totalCarro(@FormParam("articulo") Articulo articulo) throws Exception {
         Connection conexion = pool.getConnection();
 
         try {
@@ -189,7 +189,7 @@ public class Servicio
     @Path("eliminar_Articulo")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response borra(@FormParam("descripcion") String descripcion) throws Exception {
+    public Response elimina(@FormParam("descripcion") String descripcion) throws Exception {
         Connection conexion = pool.getConnection();
 
         try {
@@ -217,7 +217,7 @@ public class Servicio
     @Path("eliminar_todo")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response borra(@FormParam("descripcion") String descripcion) throws Exception {
+    public Response eliminaTodo(@FormParam("descripcion") String descripcion) throws Exception {
         Connection conexion = pool.getConnection();
 
         try {
