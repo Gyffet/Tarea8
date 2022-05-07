@@ -296,7 +296,7 @@
                
 
                 Carrito(item) {
-                    if (item.almacen <= deseados) {
+                    if (item.cantidad >= this.deseados) {
                         var cliente = new WSClient("/Servicio/rest/ws");
                         cliente.post("alCarrito", {
                             articulo:
@@ -316,7 +316,7 @@
                             });
                     }
                     else {
-                        alert("De este articulo solo estan disponibles " + this.deseados);
+                        alert("De este articulo solo estan disponibles " + item.cantidad);
                     }
                 },
             },
