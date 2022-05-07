@@ -49,24 +49,12 @@ public class Servicio
     public Response alta(@FormParam("articulo") Articulo articulo) throws Exception {
         Connection conexion = pool.getConnection();
 
-        if (articulo.descripcion == null || articulo.descripcion.equals("")) {
-            return Response.status(400).entity(j.toJson(new Error("Por favor ingrese descripción"))).build();
-        }
-
-        if (articulo.precio == null || articulo.precio.equals("")) {
-            return Response.status(400).entity(j.toJson(new Error("Por favor ingrese precio"))).build();
-        }
-
-        if (articulo.almacen == null || articulo.almacen.equals("")) {
-            return Response.status(400).entity(j.toJson(new Error("Por favor indique cuantos articulos hay en el almacen"))).build();
-        }
-
         try {
             PreparedStatement stmt_2 = conexion.prepareStatement("INSERT INTO articulos VALUES (0,?,?,?)");
             try {
                 stmt_2.setString(1, articulo.descripcion);
-                stmt_2.setInt(2, articulo.precio);
-                stmt_2.setInt(3, articulo.almacen);
+                stmt_2.setFloat(2, articulo.precio);
+                stmt_2.setInt(3, articulo.cantidad);
                 stmt_2.executeUpdate();
             } finally {
                 stmt_2.close();
