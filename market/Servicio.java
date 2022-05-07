@@ -78,7 +78,7 @@ public class Servicio
         try {
             PreparedStatement stmt_1 = conexion.prepareStatement("SELECT a.descripcion, a.precio, a.almacen WHERE descripcion LIKE %?%");
             try {
-                stmt_1.setString(1, email);
+                stmt_1.setString(1, descripcion);
 
                 ResultSet rs = stmt_1.executeQuery();
                 try {
